@@ -9,6 +9,8 @@
 #include "HW_Stats.h" 
 #include <assert.h>
 
+//#define EXTRA_DEBUG 1
+
  using namespace std; 
 
 class CSVReader 
@@ -89,7 +91,7 @@ private:
 	
 		char* psz = new char[len+1]; 
 		psz[len] = '\0';
-		cout << "(Line  is of length " << len << " and strlen psz " << strlen(psz) << endl;
+		///cout << "(Line is of length " << len << " and strlen psz " << strlen(psz) << endl;
 		strncpy(psz, line.c_str(),len);
 	///	cout << psz << endl;
 		int lastStart = 0;
@@ -100,7 +102,7 @@ private:
 				else
 					psz[i] = 0;  // ... else we write the zero terminator on top of the comma.
 				string sItem = &psz[lastStart];
-				cout << sItem << "!" << endl;
+				///cout << sItem << "!" << endl;
 				rtnItems.push_back(sItem);
 				lastStart = i + 1;
 			}
@@ -129,12 +131,12 @@ private:
 
 				_numbers.push_back(frow);
 
-				cout << "data line #" << rowNum << " has " << row.size() << "items" << endl;
+				//cout << "data line #" << rowNum << " has " << row.size() << "items" << endl;
 
 				rowNum++;
 			}
 	
-			cout << endl;
+			///cout << endl;
 			return rowNum;
 		}
 
@@ -167,11 +169,13 @@ private:
 	}
 
 	void printVector(string label, vector<float> vec) {
+#ifdef EXTRA_DEBUG
 		cout << label << endl;
 		for (float v : vec) {
 			cout << v << " ";
 		}
 		cout << endl;
+#endif
 	}
 
 	};
