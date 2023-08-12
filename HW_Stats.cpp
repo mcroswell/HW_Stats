@@ -5,6 +5,9 @@
 // 2) first row has same number of elements as data but is for description (and counting columns) only.
 // 2023 (c) by Michael L. Croswell
 // Can be used and modified but credit must be given.
+// Speaking of credit, the formulas for std deviation were gleaned from:
+// https://www.mathsisfun.com/data/standard-deviation-formulas.html
+// -mlc
 
 #include "HW_Stats.h" 
 #include <assert.h>
