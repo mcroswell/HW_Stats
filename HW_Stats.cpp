@@ -35,14 +35,16 @@ public:
 			
 			// tbd: call read data to fill up those vectors
 			_numRows = readData(myStream);
-
+			
+			vector<float> _mins(_numColumns, 999999.0); //TBD: Put in MAXF
+			vector<float> _maxs(_numColumns,-999999.0); 
 			// Run the calculations on the columns
-			// First get the averages
+			// First get the averages (and min and max)
 			_averages = averageAll();
 			printVector("Averages", _averages);
 			// Then the squared diffences (ea minus the avgs):
-			vector<float> squaredDiffs = squaredDifferencesAll(_averages);
-			printVector("Squared Diffs", squaredDiffs);
+			_stdDevs = squaredDifferencesAll(_averages);
+			printVector("Squared Diffs", _stdDevs);
 			// Finally, average the squared differences and take their squared root: 
 
 
@@ -54,10 +56,10 @@ public:
 	void report() 
 	{
 		int col = 0;
-		cout << "Column" << "\t" << " Mean" << endl;
-		for (float mean : _averages)
+		cout << "Column    \tCount     \tMean      \tStd       \tMin       \tMax" << endl;
+		for (int i=0; i < _count)
 		{
-			cout << col++ << "    \t" << mean << endl;
+			cout << col++ << ") " << _numRows << " \t" << _averages[i] << " \t" << _stdDevs[i] << " \t " << _mins[i] << " \t " << _maxs[i]    << endl;
 		}
 		cout << endl;
 	};
@@ -66,6 +68,7 @@ private:
 
 	vector< vector< float > > _numbers;
 	vector< float > _averages;
+	vector< float > _stdDevs;
 	int _numColumns;
 	int _numRows; 
 
@@ -148,6 +151,11 @@ private:
 		for (vector<float> row : _numbers) { 
 			for (int col=0; col < _numColumns; col++) {
 				averages[col] += row[col];
+				if (row[co] < mins[col]){
+					mins[col] = row[col];
+ 				if (row[co] > maxs[col]){
+					maxs[col] = row[col];
+                }               }
 			} 
 		} 
 		for (int col=0; col < _numColumns; col++) {
@@ -162,12 +170,15 @@ private:
 			for (int col = 0; col < _numColumns; col++) {
 				float diff = row[col]-averages[col];
 				diff *= diff;
-				squaredDiffs[col] = diff;
+				squaredDiffs[col] += diff; // Sum 
 			}
 		}
 		for (int col = 0; col < _numColumns; col++) {
-			squaredDiffs[col] /= (float)_numRows;
+			squaredDiffs[col] /= (float)_numRows; // avera
+			// Fina turn into std dev
+			squaredDiffs[col]= sqrt(squaredDiffs[col]);
 		}
+		
 		return squaredDiffs;
 	}
 
