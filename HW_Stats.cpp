@@ -23,7 +23,6 @@ public:
 	CSVReader(string filename)
 	{
 		ifstream myStream(filename, ios::in);
-
 		if (myStream.fail())
 		{
 			std::cout << "failed to open data file, " << filename << " with failbit " << myStream.failbit << endl;
@@ -41,14 +40,14 @@ public:
 			// Run the calculations on the columns
 			// First get the averages (and min and max)
 			_averages = averageAll();
-			printVector("Averages", _averages);
-			// Then the squared diffences (ea minus the avgs):
+			// printVector("Averages", _averages);
+			// Then sum the squared diffences (ea minus the avgs) and finally
+			//  average the sum by dividing by number of rows and take 
+			//  their (each column's  avg of sum of squared differences) 
+			//  squared root:
 			_stdDevs = stdDevAll(_averages);
-			printVector("Squared Diffs", _stdDevs);
-			// Finally, average the squared differences and take their squared root: 
+			// printVector("Squared Diffs", _stdDevs);
 
-
-			// Run the calculations on the columns
 			myStream.close();
 		}
 	}
@@ -82,20 +81,13 @@ private:
 	int countColumns(ifstream & aStream) {
 			string firstLine;
 			getline(aStream, firstLine);
-
 			string tmp;
 			size_t num = 0;
 			vector<string> row = getRowItems(firstLine);
 			num = row.size();
-			// cout << "Items from first row: " << endl;
-			// for (string item : row)
-			// {
-			// 	cout << item << " * ";
-			// }
-			// cout << endl;
+			return num; 
+	}
 
-			return num;
-		}
 
 	vector<string> getRowItems(string line, char delim = ',')
 	{
@@ -205,9 +197,9 @@ private:
 
 int main()
 {
-	// Make file on Windows put exe in sub dirs:
+	// Makefile on Windows had put exe in sub sub dirs:
 	// string filename = "../../../random_numbers.csv";
-	string filename = "random_numbers.csv";
+	string filename = "random_numbers.csv"; 
 	CSVReader cvsReader(filename);
 	cvsReader.report();
 	return 0;
