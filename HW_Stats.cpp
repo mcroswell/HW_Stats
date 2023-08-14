@@ -36,14 +36,14 @@ public:
 			// tbd: call read data to fill up those vectors
 			_numRows = readData(myStream);
 			
-			vector<float> _mins(_numColumns, 999999.0); //TBD: Put in MAXF
-			vector<float> _maxs(_numColumns,-999999.0); 
+			_mins.resize(_numColumns, 999999.0); //TBD: Put in MAXF
+			_maxs.resize(_numColumns,-999999.0); 
 			// Run the calculations on the columns
 			// First get the averages (and min and max)
 			_averages = averageAll();
 			printVector("Averages", _averages);
 			// Then the squared diffences (ea minus the avgs):
-			_stdDevs = squaredDifferencesAll(_averages);
+			_stdDevs = stdDevAll(_averages);
 			printVector("Squared Diffs", _stdDevs);
 			// Finally, average the squared differences and take their squared root: 
 
@@ -56,10 +56,15 @@ public:
 	void report() 
 	{
 		int col = 0;
-		cout << "Column    \tCount     \tMean      \tStd       \tMin       \tMax" << endl;
-		for (int i=0; i < _count)
+		cout << "Column\tCount \tMean      \tStd       \tMin       \tMax" << endl;
+		for (int i=0; i < _numColumns; i++)
 		{
-			cout << col++ << ") " << _numRows << " \t" << _averages[i] << " \t" << _stdDevs[i] << " \t " << _mins[i] << " \t " << _maxs[i]    << endl;
+			cout << col++ << ")   \t" 
+				<< _numRows << " \t" 
+				<< _averages[i] << " \t" 
+				<< _stdDevs[i] << " \t" 
+				<< _mins[i] << " \t" 
+				<< _maxs[i]  << endl;
 		}
 		cout << endl;
 	};
@@ -69,6 +74,8 @@ private:
 	vector< vector< float > > _numbers;
 	vector< float > _averages;
 	vector< float > _stdDevs;
+	vector<float> _mins; //TBD: Put in MAXF
+	vector<float> _maxs; 
 	int _numColumns;
 	int _numRows; 
 
@@ -80,12 +87,12 @@ private:
 			size_t num = 0;
 			vector<string> row = getRowItems(firstLine);
 			num = row.size();
-			cout << "Items from first row: " << endl;
-			for (string item : row)
-			{
-				cout << item << " * ";
-			}
-			cout << endl;
+			// cout << "Items from first row: " << endl;
+			// for (string item : row)
+			// {
+			// 	cout << item << " * ";
+			// }
+			// cout << endl;
 
 			return num;
 		}
@@ -151,11 +158,12 @@ private:
 		for (vector<float> row : _numbers) { 
 			for (int col=0; col < _numColumns; col++) {
 				averages[col] += row[col];
-				if (row[co] < mins[col]){
-					mins[col] = row[col];
- 				if (row[co] > maxs[col]){
-					maxs[col] = row[col];
-                }               }
+				if (row[col] < _mins[col]){
+					_mins[col] = row[col];
+				}
+ 				if (row[col] > _maxs[col]){
+					_maxs[col] = row[col];
+                } 
 			} 
 		} 
 		for (int col=0; col < _numColumns; col++) {
@@ -164,8 +172,9 @@ private:
 		return averages;
 	 }
 	
-	vector<float> squaredDifferencesAll(const vector<float> averages) {
-		vector<float> squaredDiffs(_numColumns, 0);
+	vector<float> stdDevAll(const vector<float> averages) {
+		vector<float> squaredDiffs;
+		squaredDiffs.resize(_numColumns, 0);
 		for (vector<float> row : _numbers) {
 			for (int col = 0; col < _numColumns; col++) {
 				float diff = row[col]-averages[col];
